@@ -2,14 +2,11 @@ import { getData, insertData, updateDataById, replaseDataById, deleteDataById } 
 
 async function addReport(req, res) {
     try {
-        if (req.body.fieldCode && req.body.location && req.body.threatLevel && req.body.description ) {
-            const { fieldCode, location, threatLevel, description } = req.body
-            const result = await insertData({ fieldCode, location, threatLevel, description, timestamp: new Date(), confirmed: false })
-            res.json(result)
-        }
-        else res.sendStatus(409)
+        const { fieldCode, location, threatLevel, description, timestamp = new Date() } = req.body
+        const result = await insertData({ fieldCode, location, threatLevel, description, timestamp, confirmed: false })
+        res.json(result)
     } catch (error) {
-        res.status(500).json()
+        res.status(500).json({ error })
     }
 }
 
@@ -51,6 +48,7 @@ async function deleteReportById(req, res) {
 
 export {
     addReport,
+    validateFieldsInBody,
     getReports,
     getReportsWithHighThreatLevel,
     confirmReport,
